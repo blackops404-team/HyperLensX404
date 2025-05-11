@@ -1,0 +1,6 @@
+*.log
+*.zip
+/captured_files/
+/ngrok
+php_errors.log
+sendlink
